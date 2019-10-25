@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
 
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -15,25 +16,15 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final String CHANNELAVISOS_ID = "CHANNEL_AVISOS_ID";
-    public static final String CHANNELMENSAJES_ID = "CHANNEL_MENSAJES_ID";
+    final String CHANNELAVISOS_ID = "com.example.notificacionesbotones.notificacionNormal";
+    final String CHANNELMENSAJES_ID = "CHANNEL_MENSAJES_ID";
 
     Button btnNotificacionNormal;
+    Button btnNotificacionBigText;
+    Button btnNotificacionBigPicture;
+    Button btnNotificacionInbox;
+    Button btnNotificacionBotones;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        btnNotificacionNormal = findViewById(R.id.notificacionNormal);
-
-        btnNotificacionNormal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CrearNotificacion();
-            }
-        });
-    }
 
     private NotificationChannel crearCanal(String idCanal, String nombreCanal, String descripcion, int importancia)
     {
@@ -49,32 +40,59 @@ public class MainActivity extends AppCompatActivity {
 
     private void crearCanalesNotificacion()
     {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            NotificationChannel canal = crearCanal(CHANNELAVISOS_ID,"Avisos","Avisos importantes",NotificationManager.IMPORTANCE_HIGH);
+
+            NotificationChannel canal = crearCanal(CHANNELAVISOS_ID,"Avisos","Aviso en notificacion normal",NotificationManager.IMPORTANCE_HIGH);
+
             canal.setVibrationPattern(new long[] {400,600,100,300,100});
             //Registrando el canal en el sistema luego no se podra hacer cambios.
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
 
             notificationManager.createNotificationChannel(canal);
 
         }
     }
 
-   private void CrearNotificacion()
+   private NotificationCompat.Builder CrearNotificacion()
    {
        NotificationCompat.Builder notificacion;
-       notificacion = new  NotificationCompat.Builder(getApplicationContext(),CHANNELMENSAJES_ID);
-       notificacion.setContentText("texto de la notificacion");
+       notificacion = new  NotificationCompat.Builder(this,CHANNELAVISOS_ID);
+
        notificacion.setSmallIcon(R.mipmap.ic_launcher);
-       notificacion.setLargeIcon(((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap.ic_launcher)).getBitmap());
+       //Esto siguinte no vale, hay que investigarlo
+       //notificacion.setLargeIcon(((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap.ic_launcher)).getBitmap());
        notificacion.setTicker("Prueba de Ticker");
        notificacion.setWhen(System.currentTimeMillis());
-       notificacion.setAutoCancel(false);
+       //notificacion.setAutoCancel(false);
 
-       NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-       mNotificationManager.notify(0,notificacion.build());
+       NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+       notificationManager.notify(0,notificacion.build());
 
-
+    return notificacion;
    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        crearCanalesNotificacion();
+
+        btnNotificacionNormal = findViewById(R.id.notificacionNormal);
+
+        btnNotificacionNormal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NotificationCompat.Builder  notificacion = CrearNotificacion();
+                notificacion.setContentText("Notificación normal");
+            }
+        });
+
+        btnNotificacionBigText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CrearNotificacion();
+            }
+        });
+    }
 }
