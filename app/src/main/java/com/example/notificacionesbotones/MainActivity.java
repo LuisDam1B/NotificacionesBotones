@@ -64,10 +64,9 @@ public class MainActivity extends AppCompatActivity {
        //notificacion.setLargeIcon(((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap.ic_launcher)).getBitmap());
        notificacion.setTicker("Prueba de Ticker");
        notificacion.setWhen(System.currentTimeMillis());
-       //notificacion.setAutoCancel(false);
+       notificacion.setAutoCancel(false);
 
-       NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-       notificationManager.notify(0,notificacion.build());
+
 
     return notificacion;
    }
@@ -79,20 +78,85 @@ public class MainActivity extends AppCompatActivity {
         crearCanalesNotificacion();
 
         btnNotificacionNormal = findViewById(R.id.notificacionNormal);
+        btnNotificacionBigText = findViewById(R.id.notificacionBigText);
+        btnNotificacionBigPicture = findViewById(R.id.notificacionBigPicture);
+        btnNotificacionInbox = findViewById(R.id.notificacionInbox);
+        btnNotificacionBotones = findViewById(R.id.notificacionBotones);
 
         btnNotificacionNormal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 NotificationCompat.Builder  notificacion = CrearNotificacion();
-                notificacion.setContentText("Notificación normal");
+                notificacion.setContentText("Esta es una notificación normal!!...   ");
+                notificacion.setContentTitle("Notificación normal");
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0,notificacion.build());
             }
         });
 
         btnNotificacionBigText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                CrearNotificacion();
+                NotificationCompat.Builder  notificacion = CrearNotificacion();
+                NotificationCompat.BigTextStyle n = new NotificationCompat.BigTextStyle(notificacion)
+                        .bigText("Al contrario del pensamiento popular, el texto de Lorem Ipsum no es simplemente texto aleatorio. Tiene sus raices en una pieza cl´sica de la literatura del Latin, que data del año 45 antes de Cristo, haciendo que este adquiera mas de 2000 años de antiguedad. Richard McClintock")
+                        .setBigContentTitle("Titulo expandido BigText")
+                        .setSummaryText("Summary text");
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0,notificacion.build());
+
+
+            }
+        });
+
+
+        btnNotificacionBigPicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NotificationCompat.Builder  notificacion = CrearNotificacion();
+                NotificationCompat.BigPictureStyle nBigText = new NotificationCompat.BigPictureStyle(notificacion)
+                        //.bigPicture(((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap.ic_launcher)).getBitmap())
+                        //.bigLargeIcon(((BitmapDrawable) ContextCompat.getDrawable(this,R.mipmap.ic_launcher)).getBitmap())
+                        .setBigContentTitle("Titulo de BigPictureStyle")
+                        .setSummaryText("Summary Text");
+
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(0,notificacion.build());
+            }
+
+        });
+
+        btnNotificacionInbox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String[] lines = {"Mensaje1","Mensaje2","Mensaje3","Mensaje4","Mensaje5"};
+                NotificationCompat.Builder  notificacion = CrearNotificacion();
+                NotificationCompat.InboxStyle nIS = new NotificationCompat.InboxStyle(notificacion)
+                        .setBigContentTitle("Expanded Inbox Title")
+                        .setSummaryText("Summary Text");
+
+                for (String line : lines)
+                {
+                    nIS.addLine(line);
+                }
+
+                NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                notificationManager.notify(3,nIS.build());
+
+            }
+        });
+
+        btnNotificacionBotones.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NotificationCompat.Builder  notificacion = CrearNotificacion();
+                NotificationCompat.Action action = new NotificationCompat.Action.Builder(R.drawable.ic_launcher_background,
+                        "Delete",pendingIntent.ge)
             }
         });
     }
+
+
 }
